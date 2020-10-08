@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+
+<!-- Use Django's template system to separate the design from python by creating 
+templates. to avoid issues with manipulting hardcoded py code. 
+
+We want to have the extra /polls/ folder, this points Django to the RIGHT one
+if multiple apps exist. -->
+<html lang="en">
+  <head>
+    <title>I'd rather get some head</title>
+  </head>
+
+  <body>
+    {% if latest_question_list %}
+    <ul>
+      {% for question in latest_question_list %}
+          <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+  </body>
+</html>
