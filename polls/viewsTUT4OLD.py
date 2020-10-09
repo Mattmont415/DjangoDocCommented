@@ -20,21 +20,39 @@ from .models import Choice, Question
 
 # Create your views here.
 
-class IndexView(generic.ListView):
-  template+name = 'polls/index.html'
-  context_object_name = 'latest_question_list'
+#This will display the latest 5 poll questions, separated by commas, according to publication date
+def index(request):
+  latest_question_list = Question.objects.order_by('-pub_date')[:5]
+  # template = loader.get_template('polls/index.html')
+  # context = { #Loads template and PASSES it a context: a dict mapping template variable
+  # #names to python objects
+  #   'latest_question_list': latest_question_list
+  # }
+  # return HttpResponse(template.render(context, request))
+  #The above lines rewritten as...
+  context = {'latest_question_list': latest_question_list}
+  #The render function takes the REQUEST object, a template name, and dict, it 
+  #returns an HTTPResponse object of the given template rendered WITh that context
+  return render(request, 'polls/index.html', context)
 
-  def get_queryset(self):
-    """Return the last five published questions."""
-    return Question.objects.order_by('-pub_date')[:5]
+#Called to object from address bar
+#detail(request=<HttpRequest object>, question_id=34)
+def detail(request, question_id):
+  # try:
+  #   question = Question.objects.get(pk=question_id)
+  # except Question.DoesNotExist:
+  #   #Raises 404 exception if a question with requested ID does not exist
+  #   raise Http404('Question does not exist')
+  # return render(request, 'polls/detail.html', {'question': question})
+  #this can be rewritten as...
+  question = get_object_or_404(Question, pk=question_id) #raise 404 if does not exist
+  return render(request, 'polls/detail.html', {'question': question})
 
-class DetailView(generic.DetailView):
-  model = Question
-  template_name = 'polls/detail.html'
-
-class ResultsView(generic.DetailView):
-  model = Question
-  template_name = 'polls/results.html'
+#Request is an HttpRequest object.
+#After somebody votes, the vote view redirects to te results page
+def results(request, question_id):
+  question = get_object_or_404(Question, pk=question_id)
+  return render(request, 'polls/results.html', {'question': question})
 
 def vote(request, question_id):
   question = get_object_or_404(Question, pk=question_id)
