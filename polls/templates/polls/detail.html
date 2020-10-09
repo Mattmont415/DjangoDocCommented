@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Detail Page</title>
+  </head>
+
+  <body>
+    <!-- Was passed in the variable question from views.py -->
+    <h1>{{ question.question_text }} </h1>
+
+    <!-- If error message exists, display the error message -->
+    {% if error_message %}
+      <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
+    
+    <form action="{% url 'polls:vote' question.id %}" method="post">
+      {% csrf_token %}
+      {% for choice in question.choice_set.all %}
+        <!-- Creates a radio button for the choice's specific ID 
+        Value is associated with the question choice's ID 
+        Because name="choice", when a selection is made, POST data will be sent with
+        choice=id of post.-->
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+        <label for="choice{{ forloop.counter }}">
+          {{ choice.choice_text }}
+        </label>
+      {% endfor %}
+      <input type="submit" value="Vote">
+    </form>
+    
+    
+    
+    <!--<ul> From tutorial 3 before updating
+       Method calling happened here - Gets iterable of Choice objects 
+      {% for choice in question.choice_set.all %}
+        <li>{{ choice.choice_text }}</li>
+      {% endfor %}
+    </ul>-->
+  </body>
+</html>

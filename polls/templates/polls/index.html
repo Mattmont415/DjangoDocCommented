@@ -8,14 +8,21 @@ We want to have the extra /polls/ folder, this points Django to the RIGHT one
 if multiple apps exist. -->
 <html lang="en">
   <head>
-    <title>I'd rather get some head</title>
+    <title>Main page</title>
   </head>
 
   <body>
     {% if latest_question_list %}
     <ul>
       {% for question in latest_question_list %}
-          <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+          <!-- Avoid hardcoding, because if you change URLs on projects with many
+          templates it could be a problem! -->
+          <!-- <li><a href="/polls/(curlybrace) question.id (curlybrace)/">(curly) question.question_text (curly)</a></li> 
+          We NAMED 'detail' in the urls.py file, so we can reference it as...-->
+          <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+          <!-- Now we only need to change the URL in the urls.py file. See there for 
+          information about namespacing -->
+
       {% endfor %}
     </ul>
     {% else %}
