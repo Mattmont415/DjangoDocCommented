@@ -8,6 +8,8 @@ from django.urls import reverse
 #need to import generic to work with django's generic views
 from django.views import generic
 
+from django.utils import timezone
+
 #Import each model that will be used in the views
 from .models import Choice, Question
 
@@ -25,9 +27,12 @@ class IndexView(generic.ListView):
   template_name = 'polls/index.html'
   context_object_name = 'latest_question_list'
 
+  #Fixing queryset to make it so only the most recent posts, (not future posts) are posted
   def get_queryset(self):
     """Return the last five published questions."""
-    return Question.objects.order_by('-pub_date')[:5]
+    #lte, less than equal, so pub_date is <= timezone.now
+    return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
+
 #The detailview expects the primary key value captured from the URL, why we switched
 #question_id for PK
 #Detail view - Display a detail page for a particular type of object
@@ -35,6 +40,9 @@ class DetailView(generic.DetailView):
   model = Question
   #Separate from results view, so they have different appearance when rendered
   template_name = 'polls/detail.html'
+  def get_queryset(self):
+    #Excludes any questions that aren't published yet
+    return Question.objects.filter(pub_date__lte=timezone.now())
 
 #Detail view gen view uses template <appname>/<modelname>_detail.html, so here it would
 #polls/question_detail.html
