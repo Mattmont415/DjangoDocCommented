@@ -19,7 +19,8 @@ from .models import Choice, Question
 #OR raising an exception
 
 # Create your views here.
-
+#Each generic view needs to know what model it will be acting upon
+#ListView - Display a list of objects!
 class IndexView(generic.ListView):
   template+name = 'polls/index.html'
   context_object_name = 'latest_question_list'
@@ -27,7 +28,9 @@ class IndexView(generic.ListView):
   def get_queryset(self):
     """Return the last five published questions."""
     return Question.objects.order_by('-pub_date')[:5]
-
+#The detailview expects the primary key value captured from the URL, why we switched
+#question_id for PK
+#Detail view - Display a detail page for a particular type of object
 class DetailView(generic.DetailView):
   model = Question
   template_name = 'polls/detail.html'
