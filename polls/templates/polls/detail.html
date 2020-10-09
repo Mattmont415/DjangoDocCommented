@@ -13,7 +13,10 @@
       <p><strong>{{ error_message }}</strong></p>
     {% endif %}
     
+    <!-- Using method post is IMPORTANT, the act of submitting this form will alter data 
+    server-side. Whenever using server-side, use POST. -->
     <form action="{% url 'polls:vote' question.id %}" method="post">
+      <!-- Because post, worry about csrf (Cross site request forgeries). All post forms need this -->
       {% csrf_token %}
       {% for choice in question.choice_set.all %}
         <!-- Creates a radio button for the choice's specific ID 
@@ -24,6 +27,7 @@
         <label for="choice{{ forloop.counter }}">
           {{ choice.choice_text }}
         </label>
+        <br>
       {% endfor %}
       <input type="submit" value="Vote">
     </form>
